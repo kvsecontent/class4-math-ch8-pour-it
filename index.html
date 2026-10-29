@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Weigh It, Pour It – Capacity Games | Class 4 Maths Ch 8</title>
+<style>
+:root{
+  --maroon:#7b1e2b; --maroon-d:#5a1520; --saffron:#f28c28; --saffron-l:#ffe2c2;
+  --green:#138808; --green-l:#dff3d8; --cream:#fff8ec; --ink:#2b1a14; --muted:#6d5a50;
+  --water:#3fa2e8; --water-d:#1f78c0; --milk:#fffdf6; --red:#d23b2f; --card:#ffffff;
+  --line:#ead9c3; --shadow:0 6px 18px rgba(90,21,32,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:"Segoe UI","Nirmala UI",system-ui,-apple-system,Roboto,"Noto Sans",sans-serif;background:var(--cream);color:var(--ink);
+  user-select:none;-webkit-user-select:none;touch-action:manipulation;overflow-x:hidden}
+button{font:inherit;cursor:pointer;border:none}
+.topbar{display:flex;align-items:center;gap:12px;padding:10px 18px;background:var(--maroon);color:#fff;
+  border-bottom:5px solid var(--saffron);position:sticky;top:0;z-index:30}
+.topbar .badge{background:var(--saffron);color:var(--maroon-d);font-weight:800;border-radius:10px;padding:6px 10px;font-size:14px;white-space:nowrap}
+.topbar h1{font-size:clamp(17px,2.2vw,28px);font-weight:800;line-height:1.1}
+.topbar h1 small{display:block;font-size:.55em;font-weight:500;opacity:.85}
+.topbar .sp{flex:1}
+.tbtn{background:rgba(255,255,255,.14);color:#fff;border-radius:10px;padding:9px 13px;font-weight:700;font-size:15px}
+.tbtn:hover{background:rgba(255,255,255,.25)}
+main{max-width:1500px;margin:0 auto;padding:18px}
+.screen{display:none;animation:fade .3s ease}
+.screen.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:14px 10px 22px}
+footer b{color:var(--maroon)}
+
+/* ---------- HOME ---------- */
+.factband{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:4px 0 18px}
+.fact{background:#fff;border:2px solid var(--line);border-radius:999px;padding:8px 16px;font-weight:700;font-size:clamp(14px,1.5vw,19px)}
+.fact b{color:var(--maroon)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.gcard{background:var(--card);border-radius:22px;box-shadow:var(--shadow);overflow:hidden;text-align:left;display:flex;flex-direction:column;
+  border:3px solid transparent;transition:transform .15s,border-color .15s}
+.gcard:hover{transform:translateY(-3px);border-color:var(--saffron)}
+.gcard .art{height:170px;display:flex;align-items:center;justify-content:center;gap:10px}
+.gcard .art svg{height:130px;width:auto}
+.gcard .txt{padding:14px 18px 18px}
+.gcard .pg{display:inline-block;font-size:13px;font-weight:800;color:#fff;background:var(--green);border-radius:8px;padding:3px 9px;margin-bottom:6px}
+.gcard h2{font-size:clamp(20px,2vw,26px);color:var(--maroon);margin-bottom:6px}
+.gcard p{color:var(--muted);font-size:15px;line-height:1.4}
+.gcard .go{margin-top:12px;display:inline-block;background:var(--saffron);color:#fff;font-weight:800;border-radius:12px;padding:10px 18px;font-size:17px}
+.art.a1{background:linear-gradient(135deg,#fff1df,#ffe0c0)}
+.art.a2{background:linear-gradient(135deg,#e4f3ff,#cbe7ff)}
+.art.a3{background:linear-gradient(135deg,#eaf7e4,#d3efc8)}
+
+/* ---------- COMMON ---------- */
+.head2{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:12px}
+.head2 h2{font-size:clamp(20px,2.4vw,32px);color:var(--maroon)}
+.head2 .pg{font-size:13px;font-weight:800;color:#fff;background:var(--green);border-radius:8px;padding:4px 9px}
+.head2 .sp{flex:1}
+.pill{background:#fff;border:2px solid var(--line);border-radius:999px;padding:7px 14px;font-weight:800;font-size:clamp(15px,1.5vw,20px)}
+.pill.score{border-color:var(--saffron);color:var(--maroon)}
+.btn{border-radius:14px;padding:11px 18px;font-weight:800;font-size:clamp(15px,1.4vw,19px);box-shadow:0 3px 0 rgba(0,0,0,.15)}
+.btn:active{transform:translateY(2px);box-shadow:none}
+.btn.pri{background:var(--saffron);color:#fff}
+.btn.grn{background:var(--green);color:#fff}
+.btn.mar{background:var(--maroon);color:#fff}
+.btn.ghost{background:#fff;color:var(--maroon);border:2px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.panel{background:#fff;border-radius:20px;box-shadow:var(--shadow);padding:16px}
+.instr{background:var(--saffron-l);border-left:6px solid var(--saffron);border-radius:12px;padding:10px 14px;margin-bottom:14px;
+  font-size:clamp(15px,1.5vw,20px);line-height:1.4}
+.toast{position:fixed;left:50%;top:90px;transform:translateX(-50%) scale(.9);background:var(--maroon);color:#fff;padding:14px 22px;border-radius:16px;
+  font-weight:800;font-size:clamp(17px,2vw,24px);box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:all .25s;z-index:60;max-width:92vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) scale(1)}
+.toast.good{background:var(--green)}
+.toast.bad{background:var(--red)}
+.modal{position:fixed;inset:0;background:rgba(43,26,20,.55);display:none;align-items:center;justify-content:center;z-index:70;padding:16px}
+.modal.on{display:flex}
+.modal .box{background:#fff;border-radius:24px;max-width:640px;width:100%;padding:24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:pop .3s ease;max-height:92vh;overflow:auto}
+@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:none;opacity:1}}
+.modal h3{font-size:clamp(24px,3vw,34px);color:var(--maroon);margin-bottom:8px}
+.modal p{font-size:clamp(16px,1.7vw,21px);color:var(--ink);line-height:1.45;margin-bottom:10px}
+.modal .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.opts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.opts button{min-width:90px;background:var(--cream);border:3px solid var(--line);border-radius:16px;padding:14px 18px;font-size:clamp(20px,2.4vw,30px);font-weight:900;color:var(--maroon)}
+.opts button:hover{border-color:var(--saffron)}
+.big-emoji{font-size:54px;line-height:1}
+.confetti{position:fixed;top:-20px;width:12px;height:18px;z-index:80;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+
+/* ---------- GAME 1: SORT ---------- */
+.tray{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;min-height:150px;padding:12px;background:#fff;border-radius:20px;box-shadow:var(--shadow);margin-bottom:16px}
+.item{width:clamp(108px,10vw,140px);background:var(--cream);border:3px solid var(--line);border-radius:18px;padding:8px 6px;text-align:center;cursor:grab;touch-action:none;
+  transition:transform .12s,border-color .12s}
+.item svg{width:70%;height:auto;max-height:84px;display:block;margin:0 auto 4px}
+.item .nm{font-weight:800;font-size:clamp(13px,1.2vw,16px);line-height:1.15}
+.item.sel{border-color:var(--saffron);transform:scale(1.07);box-shadow:0 0 0 5px rgba(242,140,40,.25)}
+.item.done{cursor:default}
+.item .cap{display:block;margin-top:4px;font-size:13px;font-weight:800;color:#fff;background:var(--green);border-radius:8px;padding:2px 6px}
+.item.wrong .cap{background:var(--red)}
+.bins{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.bin{border-radius:22px;min-height:250px;padding:12px;border:4px dashed;transition:transform .12s,box-shadow .12s;display:flex;flex-direction:column}
+.bin h3{text-align:center;font-size:clamp(17px,1.9vw,25px);margin-bottom:2px}
+.bin .sub{text-align:center;font-size:clamp(13px,1.2vw,16px);color:var(--muted);margin-bottom:8px;font-weight:600}
+.bin .in{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-content:flex-start;flex:1}
+.bin .in .item{width:clamp(92px,8vw,116px);padding:5px 4px}
+.bin .in .item svg{max-height:56px}
+.bin.less{background:#eef7ff;border-color:#7cbcf0}.bin.less h3{color:var(--water-d)}
+.bin.eq{background:#fff4e6;border-color:var(--saffron)}.bin.eq h3{color:#b85f0a}
+.bin.more{background:#ecf8e8;border-color:#6cc25a}.bin.more h3{color:var(--green)}
+.bin.hot{transform:scale(1.02);box-shadow:0 0 0 6px rgba(242,140,40,.35)}
+.dragghost{position:fixed;pointer-events:none;z-index:90;opacity:.9;transform:translate(-50%,-50%) scale(1.08)}
+.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+/* ---------- GAME 2: FILL ---------- */
+.fillgrid{display:grid;grid-template-columns:minmax(230px,1fr) minmax(260px,1.05fr) minmax(300px,1.25fr);gap:16px;align-items:start}
+.modes{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.modes button{background:#fff;border:2px solid var(--line);border-radius:12px;padding:8px 12px;font-weight:800;color:var(--maroon);font-size:clamp(13px,1.2vw,16px)}
+.modes button.on{background:var(--maroon);color:#fff;border-color:var(--maroon)}
+.taskbox{background:var(--saffron-l);border-radius:14px;padding:10px 14px;font-weight:700;font-size:clamp(15px,1.5vw,20px);margin-bottom:12px;min-height:48px}
+.vessels{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.vessel{background:#fff;border:3px solid var(--line);border-radius:18px;padding:8px 6px 10px;text-align:center;transition:transform .12s,border-color .12s}
+.vessel:hover{border-color:var(--water)}
+.vessel:active{transform:scale(.96)}
+.vessel svg{height:70px;width:auto}
+.vessel .ml{font-size:clamp(18px,1.9vw,26px);font-weight:900;color:var(--water-d);line-height:1}
+.vessel .cnt{font-size:13px;color:var(--muted);font-weight:700;margin-top:2px}
+.vessel.locked{opacity:.3;pointer-events:none}
+.bottlewrap{position:relative;display:flex;justify-content:center}
+.bottlewrap svg.bottle{width:100%;max-width:300px;height:auto}
+.pourer{position:absolute;top:-10px;left:50%;width:80px;transform-origin:80% 80%;pointer-events:none;opacity:0;transition:opacity .2s}
+.btnrow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.calc{font-size:clamp(16px,1.6vw,21px)}
+.calc h3{color:var(--maroon);font-size:clamp(18px,1.8vw,24px);margin-bottom:8px}
+.calc .eq{background:#f4f9ff;border:2px solid #cfe5f8;border-radius:14px;padding:10px 12px;margin-bottom:10px;font-weight:700;line-height:1.5;word-break:break-word}
+.calc .eq .lab{display:block;font-size:13px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.calc .eq .big{font-size:1.25em;color:var(--water-d);font-weight:900}
+.calc .need{background:var(--saffron-l);border-color:#f5c99a}
+.calc .need .big{color:#b85f0a}
+.calc .done{background:var(--green-l);border-color:#a9dc9b}
+.calc .done .big{color:var(--green)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--water);color:#fff;border-radius:999px;padding:3px 10px;font-weight:800;font-size:15px}
+.chip.c500{background:#1f78c0}.chip.c250{background:#3fa2e8}.chip.c200{background:#7b5cd6}
+.chip.c100{background:#e07b16}.chip.c50{background:#138808}.chip.c10{background:#c2185b}
+.bar{height:22px;border-radius:999px;background:#e9eef3;overflow:hidden;margin-top:6px;border:2px solid #d5dee7}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--water),var(--water-d));transition:width .5s}
+
+/* ---------- GAME 3: MILK ---------- */
+.tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.tabs button{background:#fff;border:2px solid var(--line);border-radius:12px;padding:9px 16px;font-weight:800;color:var(--maroon);font-size:clamp(14px,1.4vw,18px)}
+.tabs button.on{background:var(--green);color:#fff;border-color:var(--green)}
+.milkgrid{display:grid;grid-template-columns:minmax(300px,1.1fr) minmax(220px,.8fr) minmax(280px,1.1fr);gap:16px;align-items:start}
+.order{display:flex;gap:12px;align-items:center}
+.order svg{width:90px;height:auto;flex:none}
+.bubble{background:#fff;border:3px solid var(--saffron);border-radius:18px;padding:10px 14px;font-size:clamp(17px,1.8vw,24px);font-weight:700;position:relative}
+.bubble b{color:var(--maroon);font-size:1.25em}
+.cans{display:flex;gap:10px;align-items:flex-end;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.can{background:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;border-radius:14px;border:3px solid transparent}
+.can:hover{border-color:var(--saffron)}
+.can:active{transform:scale(.95)}
+.can .ml{font-weight:900;color:var(--maroon);font-size:clamp(15px,1.5vw,19px)}
+.potwrap{display:flex;justify-content:center}
+.potwrap svg{width:100%;max-width:260px;height:auto}
+.leak{display:grid;grid-template-columns:minmax(280px,1fr) minmax(300px,1.2fr);gap:16px;align-items:start}
+.rates{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}
+.rates button{background:#fff;border:3px solid var(--line);border-radius:14px;padding:10px 14px;font-weight:900;font-size:clamp(16px,1.6vw,20px);color:var(--water-d)}
+.rates button.on{border-color:var(--water-d);background:#e4f3ff}
+.clock{font-size:clamp(26px,3vw,40px);font-weight:900;color:var(--maroon);text-align:center}
+.qbox{margin-top:12px;background:var(--cream);border:2px solid var(--line);border-radius:16px;padding:12px}
+.qbox .q{font-weight:800;font-size:clamp(16px,1.6vw,21px);margin-bottom:6px}
+.qbox .opts button{font-size:clamp(16px,1.6vw,21px);min-width:120px;padding:10px 12px}
+.qbox .opts button.right{background:var(--green-l);border-color:var(--green)}
+.qbox .opts button.no{background:#fde4e1;border-color:var(--red)}
+
+@media (max-width:1100px){
+  .fillgrid{grid-template-columns:1fr 1fr}
+  .fillgrid .calc{grid-column:1/-1}
+  .milkgrid{grid-template-columns:1fr 1fr}
+  .milkgrid .calc{grid-column:1/-1}
+}
+@media (max-width:700px){
+  main{padding:10px}
+  .bins{grid-template-columns:1fr}
+  .bin{min-height:150px}
+  .fillgrid,.milkgrid,.leak{grid-template-columns:1fr}
+  .vessels{grid-template-columns:repeat(3,1fr)}
+  .topbar .badge{display:none}
+  .gcard .art{height:130px}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="badge">Class 4 · Maths</span>
+  <h1>Weigh It, Pour It <small>Chapter 8 · Measuring Capacity — Interactive Games</small></h1>
+  <span class="sp"></span>
+  <button class="tbtn" id="homeBtn" title="Home">🏠 Home</button>
+  <button class="tbtn" id="muteBtn" title="Sound on/off">🔊</button>
+  <button class="tbtn" id="fsBtn" title="Full screen">⛶</button>
+</header>
+
+<main>
+<!-- ================= HOME ================= -->
+<section class="screen on" id="home">
+  <div class="factband">
+    <span class="fact"><b>l</b> = litre</span>
+    <span class="fact"><b>ml</b> = millilitre</span>
+    <span class="fact"><b>1 l</b> = <b>1000 ml</b></span>
+    <span class="fact"><b>½ l</b> = 500 ml</span>
+    <span class="fact"><b>¼ l</b> = 250 ml</span>
+  </div>
+  <div class="cards">
+    <button class="gcard" data-go="sort">
+      <div class="art a1" id="art1"></div>
+      <div class="txt">
+        <span class="pg">Page 122</span>
+        <h2>Capacity Sort</h2>
+        <p>Does it hold <b>less than 1 litre</b>, <b>1 litre</b> or <b>more than 1 litre</b>? Drag each container into the right box.</p>
+        <span class="go">Play ▶</span>
+      </div>
+    </button>
+    <button class="gcard" data-go="fill">
+      <div class="art a2" id="art2"></div>
+      <div class="txt">
+        <span class="pg">Pages 122–125</span>
+        <h2>Fill the 1 Litre Bottle</h2>
+        <p>Pour water from 500 ml, 250 ml, 200 ml, 100 ml, 50 ml and 10 ml containers. Watch the calculation grow with every pour!</p>
+        <span class="go">Play ▶</span>
+      </div>
+    </button>
+    <button class="gcard" data-go="milk">
+      <div class="art a3" id="art3"></div>
+      <div class="txt">
+        <span class="pg">Page 127</span>
+        <h2>Milk Cans &amp; Leaky Tap</h2>
+        <p>Serve customers using the milkman's measuring cans (1000, 500, 200, 100, 50 ml) and find how much water a dripping tap wastes.</p>
+        <span class="go">Play ▶</span>
+      </div>
+    </button>
+  </div>
+</section>
+
+<!-- ================= GAME 1 : SORT ================= -->
+<section class="screen" id="sort">
+  <div class="head2">
+    <h2>Capacity Sort</h2><span class="pg">Page 122</span>
+    <span class="sp"></span>
+    <span class="pill" id="sortLeft">Left: 9</span>
+    <span class="pill score" id="sortScore">⭐ 0</span>
+    <button class="btn ghost" id="sortNew">🔄 New set</button>
+  </div>
+  <div class="instr">👉 <b>Tap</b> a container and then <b>tap a box</b> — or <b>drag</b> it into the box. Think: how much water can it hold?</div>
+  <div class="tray" id="tray"></div>
+  <div class="bins">
+    <div class="bin less" data-cat="less"><h3>Less than 1 litre</h3><div class="sub">&lt; 1000 ml</div><div class="in"></div></div>
+    <div class="bin eq" data-cat="eq"><h3>1 litre</h3><div class="sub">= 1000 ml</div><div class="in"></div></div>
+    <div class="bin more" data-cat="more"><h3>More than 1 litre</h3><div class="sub">&gt; 1000 ml</div><div class="in"></div></div>
+  </div>
+</section>
+
+<!-- ================= GAME 2 : FILL ================= -->
+<section class="screen" id="fill">
+  <div class="head2">
+    <h2>Fill the 1 Litre Bottle</h2><span class="pg">Pages 122–125</span>
+    <span class="sp"></span>
+    <span class="pill score" id="fillScore">⭐ 0</span>
+  </div>
+  <div class="modes" id="modes"></div>
+  <div class="fillgrid">
+    <div class="panel">
+      <div class="taskbox" id="task"></div>
+      <div class="vessels" id="vessels"></div>
+    </div>
+    <div class="panel">
+      <div class="bottlewrap" id="bottleWrap"></div>
+      <div class="btnrow">
+        <button class="btn ghost" id="undoBtn">↩ Undo</button>
+        <button class="btn mar" id="emptyBtn">🗑 Empty</button>
+      </div>
+    </div>
+    <div class="panel calc" id="calc"></div>
+  </div>
+</section>
+
+<!-- ================= GAME 3 : MILK + LEAK ================= -->
+<section class="screen" id="milk">
+  <div class="head2">
+    <h2 id="milkTitle">Milk Measuring Cans</h2><span class="pg">Page 127</span>
+    <span class="sp"></span>
+    <span class="pill" id="custNo">Customer 1 / 6</span>
+    <span class="pill score" id="coins">🪙 0</span>
+  </div>
+  <div class="tabs">
+    <button class="on" data-tab="cans">🥛 Milk Cans</button>
+    <button data-tab="leak">🚰 Leaky Tap</button>
+  </div>
+
+  <div id="tabCans">
+    <div class="milkgrid">
+      <div class="panel">
+        <div class="order"><span id="custArt"></span><div class="bubble" id="orderTxt"></div></div>
+        <div class="cans" id="cans"></div>
+        <div class="instr" style="margin:14px 0 0;font-size:16px">Tap a measuring can to pour it into the customer's vessel. Try to use the <b>fewest cans</b> for bonus coins!</div>
+      </div>
+      <div class="panel">
+        <div class="potwrap" id="potWrap"></div>
+        <div class="btnrow">
+          <button class="btn ghost" id="mUndo">↩ Undo</button>
+          <button class="btn mar" id="mEmpty">🗑 Empty</button>
+          <button class="btn grn" id="mServe">✅ Serve</button>
+        </div>
+      </div>
+      <div class="panel calc" id="mCalc"></div>
+    </div>
+  </div>
+
+  <div id="tabLeak" style="display:none">
+    <div class="leak">
+      <div class="panel">
+        <div class="instr" style="font-size:17px">💧 A tap is dripping slowly. Choose how much water it loses in <b>1 hour</b>, then run the clock for a whole day.</div>
+        <div class="rates" id="rates"></div>
+        <div class="clock" id="clock">Hour 0 of 24</div>
+        <div class="potwrap" id="leakWrap"></div>
+        <div class="btnrow">
+          <button class="btn pri" id="leakGo">▶ Run 24 hours</button>
+          <button class="btn ghost" id="leakReset">↺ Reset</button>
+        </div>
+      </div>
+      <div class="panel calc" id="leakCalc"></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>PM SHRI Kendriya Vidyalaya Raebareli · <b>Class 4 Maths — Chapter 8: Weigh It, Pour It</b> · Interactive capacity games for the smartboard</footer>
+
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="box" id="modalBox"></div></div>
+
+<script>
+(function(){
+"use strict";
+/* ============ helpers ============ */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const FR={250:'¼ l',500:'½ l',750:'¾ l',1000:'1 l',1250:'1¼ l',1500:'1½ l',1750:'1¾ l',2000:'2 l'};
+function fmt(ml){ if(ml<1000) return ml+' ml'; const l=Math.floor(ml/1000), r=ml%1000; return l+' l'+(r?' '+r+' ml':''); }
+function fmtBoth(ml){ return ml>=1000? `${ml} ml = ${fmt(ml)}` : `${ml} ml`; }
+let muted=false, actx=null;
+function tone(f,d=.12,type='sine',vol=.08,when=0){ if(muted)return; try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+  const t=actx.currentTime+when,o=actx.createOscillator(),g=actx.createGain(); o.type=type;o.frequency.setValueAtTime(f,t);
+  g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(.0001,t+d); o.connect(g).connect(actx.destination); o.start(t); o.stop(t+d+.02);}catch(e){} }
+const sGood=()=>{tone(660,.12);tone(880,.18,'sine',.08,.1)}, sBad=()=>{tone(220,.25,'square',.04)};
+const sWin=()=>[523,659,784,1046].forEach((f,i)=>tone(f,.2,'triangle',.08,i*.12));
+function sPour(){ if(muted)return; for(let i=0;i<6;i++) tone(500+Math.random()*500,.06,'sine',.03,i*.07); }
+let toastT; function toast(msg,kind=''){ const t=$('#toast'); t.className='toast show '+kind; t.innerHTML=msg; clearTimeout(toastT); toastT=setTimeout(()=>t.className='toast',2200); }
+function modal(html){ $('#modalBox').innerHTML=html; $('#modal').classList.add('on'); }
+function closeModal(){ $('#modal').classList.remove('on'); }
+function confetti(){ const cols=['#f28c28','#7b1e2b','#138808','#3fa2e8','#ffd23f'];
+  for(let i=0;i<70;i++){ const c=document.createElement('div'); c.className='confetti'; c.style.left=Math.random()*100+'vw';
+    c.style.background=cols[i%cols.length]; c.style.animationDuration=(1.8+Math.random()*1.8)+'s'; c.style.animationDelay=(Math.random()*.5)+'s';
+    document.body.appendChild(c); setTimeout(()=>c.remove(),4200);} }
+
+/* ============ SVG icon library (no emoji / no external files) ============ */
+const IC={
+ spoon:`<svg viewBox="0 0 64 64"><ellipse cx="20" cy="22" rx="12" ry="9" fill="#cfd8dc" stroke="#78909c" stroke-width="2" transform="rotate(-35 20 22)"/><rect x="27" y="27" width="5" height="32" rx="2.5" fill="#b0bec5" stroke="#78909c" stroke-width="2" transform="rotate(-35 29 43)"/></svg>`,
+ cup:`<svg viewBox="0 0 64 64"><path d="M12 22h34l-4 28a6 6 0 0 1-6 5H22a6 6 0 0 1-6-5z" fill="#fff" stroke="#8d6e63" stroke-width="3"/><path d="M46 28c10 0 10 14 0 14" fill="none" stroke="#8d6e63" stroke-width="3"/><path d="M15 27h28l-1 6H16z" fill="#a1683a"/><path d="M22 8c-3 4 3 6 0 10M32 8c-3 4 3 6 0 10" stroke="#bdbdbd" stroke-width="2" fill="none"/></svg>`,
+ glass:`<svg viewBox="0 0 64 64"><path d="M16 8h32l-4 50H20z" fill="#e3f2fd" stroke="#64b5f6" stroke-width="3"/><path d="M18.5 24h27l-3 32h-21z" fill="#fff" stroke="#e0e0e0"/></svg>`,
+ baby:`<svg viewBox="0 0 64 64"><path d="M28 4h8l3 10H25z" fill="#ffcc80" stroke="#ef6c00" stroke-width="2"/><rect x="22" y="14" width="20" height="6" rx="2" fill="#4fc3f7"/><rect x="21" y="20" width="22" height="40" rx="6" fill="#fff" stroke="#4fc3f7" stroke-width="3"/><rect x="24" y="34" width="16" height="23" rx="4" fill="#fff8e1"/><path d="M34 26h5M34 32h5M34 38h5M34 44h5" stroke="#4fc3f7" stroke-width="2"/></svg>`,
+ bowl:`<svg viewBox="0 0 64 64"><path d="M6 26h52c0 16-12 26-26 26S6 42 6 26z" fill="#ffab91" stroke="#d84315" stroke-width="3"/><rect x="22" y="50" width="20" height="6" rx="3" fill="#d84315"/><ellipse cx="32" cy="26" rx="26" ry="5" fill="#ffe0b2" stroke="#d84315" stroke-width="3"/></svg>`,
+ can:`<svg viewBox="0 0 64 64"><rect x="18" y="8" width="28" height="50" rx="5" fill="#e53935" stroke="#8e0000" stroke-width="3"/><rect x="18" y="24" width="28" height="16" fill="#fff"/><text x="32" y="36" font-size="10" font-weight="900" text-anchor="middle" fill="#e53935" font-family="Arial">COLA</text><rect x="22" y="5" width="20" height="5" rx="2" fill="#bdbdbd"/></svg>`,
+ drop:`<svg viewBox="0 0 64 64"><path d="M29 2h6l2 10H27z" fill="#fff" stroke="#1976d2" stroke-width="2"/><rect x="24" y="12" width="16" height="7" rx="2" fill="#1976d2"/><rect x="22" y="19" width="20" height="38" rx="6" fill="#e3f2fd" stroke="#1976d2" stroke-width="3"/><path d="M32 30c-4 6-4 9 0 10 4-1 4-4 0-10z" fill="#1976d2"/></svg>`,
+ shampoo:`<svg viewBox="0 0 64 64"><rect x="27" y="4" width="10" height="10" rx="2" fill="#7e57c2"/><path d="M20 16h24l2 40a4 4 0 0 1-4 4H22a4 4 0 0 1-4-4z" fill="#b39ddb" stroke="#5e35b1" stroke-width="3"/><circle cx="32" cy="36" r="7" fill="#fff"/></svg>`,
+ bottle1:`<svg viewBox="0 0 64 64"><rect x="26" y="2" width="12" height="7" rx="2" fill="#1565c0"/><path d="M26 9h12v6l6 8v34a5 5 0 0 1-5 5H25a5 5 0 0 1-5-5V23l6-8z" fill="#bbdefb" stroke="#1565c0" stroke-width="3"/><rect x="20" y="30" width="24" height="14" fill="#fff" stroke="#1565c0" stroke-width="1.5"/><text x="32" y="41" font-size="11" font-weight="900" text-anchor="middle" fill="#c62828" font-family="Arial">1 l</text></svg>`,
+ milkpack:`<svg viewBox="0 0 64 64"><path d="M14 12l8-8h20l8 8v46H14z" fill="#fff" stroke="#1e88e5" stroke-width="3"/><path d="M14 12h36" stroke="#1e88e5" stroke-width="3"/><rect x="14" y="22" width="36" height="22" fill="#1e88e5"/><text x="32" y="32" font-size="8" font-weight="900" text-anchor="middle" fill="#fff" font-family="Arial">MILK</text><text x="32" y="42" font-size="10" font-weight="900" text-anchor="middle" fill="#ffeb3b" font-family="Arial">1 l</text></svg>`,
+ oil:`<svg viewBox="0 0 64 64"><rect x="26" y="3" width="12" height="7" rx="2" fill="#f9a825"/><path d="M26 10h12v5l8 9v32a5 5 0 0 1-5 5H23a5 5 0 0 1-5-5V24l8-9z" fill="#ffe082" stroke="#f57f17" stroke-width="3"/><rect x="18" y="32" width="28" height="13" fill="#2e7d32"/><text x="32" y="42" font-size="10" font-weight="900" text-anchor="middle" fill="#fff" font-family="Arial">OIL 1 l</text></svg>`,
+ juice:`<svg viewBox="0 0 64 64"><rect x="16" y="10" width="32" height="50" rx="3" fill="#ff9800" stroke="#e65100" stroke-width="3"/><path d="M16 10l6-6h20l6 6" fill="#ffb74d" stroke="#e65100" stroke-width="3"/><circle cx="32" cy="30" r="8" fill="#ffeb3b"/><text x="32" y="52" font-size="10" font-weight="900" text-anchor="middle" fill="#fff" font-family="Arial">1 l</text></svg>`,
+ bucket:`<svg viewBox="0 0 64 64"><path d="M14 20a18 14 0 0 1 36 0" fill="none" stroke="#607d8b" stroke-width="3"/><path d="M10 20h44l-6 38H16z" fill="#4fc3f7" stroke="#0277bd" stroke-width="3"/><rect x="8" y="17" width="48" height="6" rx="3" fill="#0288d1"/></svg>`,
+ drum:`<svg viewBox="0 0 64 64"><rect x="12" y="6" width="40" height="54" rx="5" fill="#455a64" stroke="#263238" stroke-width="3"/><path d="M12 22h40M12 44h40" stroke="#90a4ae" stroke-width="3"/><ellipse cx="32" cy="8" rx="20" ry="3" fill="#78909c"/></svg>`,
+ tub:`<svg viewBox="0 0 64 64"><path d="M4 30h56v6c0 12-8 18-16 18H20c-8 0-16-6-16-18z" fill="#fff" stroke="#546e7a" stroke-width="3"/><rect x="2" y="27" width="60" height="5" rx="2" fill="#90a4ae"/><path d="M10 27V12a5 5 0 0 1 10 0" fill="none" stroke="#546e7a" stroke-width="3"/><path d="M14 54l-3 6M50 54l3 6" stroke="#546e7a" stroke-width="3"/><path d="M8 32h48" stroke="#4fc3f7" stroke-width="4"/></svg>`,
+ kettle:`<svg viewBox="0 0 64 64"><path d="M14 26h32l4 30H10z" fill="#b0bec5" stroke="#455a64" stroke-width="3"/><path d="M20 26a10 10 0 0 1 20 0" fill="none" stroke="#455a64" stroke-width="3"/><path d="M46 34l12-8-2 10-8 6" fill="#b0bec5" stroke="#455a64" stroke-width="3"/><path d="M14 34c-10 0-10 14 0 14" fill="none" stroke="#455a64" stroke-width="3"/></svg>`,
+ pot:`<svg viewBox="0 0 64 64"><rect x="10" y="22" width="44" height="32" rx="6" fill="#ff7043" stroke="#bf360c" stroke-width="3"/><path d="M6 26h6M52 26h6" stroke="#bf360c" stroke-width="5" stroke-linecap="round"/><path d="M10 22c4-8 40-8 44 0" fill="#ffab91" stroke="#bf360c" stroke-width="3"/><circle cx="32" cy="14" r="3" fill="#bf360c"/></svg>`,
+ jug:`<svg viewBox="0 0 64 64"><path d="M16 10h28l-4 8 4 38a4 4 0 0 1-4 4H20a4 4 0 0 1-4-4z" fill="#e1f5fe" stroke="#0288d1" stroke-width="3"/><path d="M44 22c10 0 10 20 0 20" fill="none" stroke="#0288d1" stroke-width="3"/><path d="M18 30h24v24a2 2 0 0 1-2 2H20a2 2 0 0 1-2-2z" fill="#81d4fa"/><path d="M8 10h10" stroke="#0288d1" stroke-width="3"/></svg>`,
+ cooler:`<svg viewBox="0 0 64 64"><path d="M22 4h20l4 18H18z" fill="#b3e5fc" stroke="#0277bd" stroke-width="3"/><rect x="14" y="22" width="36" height="38" rx="4" fill="#eceff1" stroke="#546e7a" stroke-width="3"/><rect x="22" y="34" width="8" height="5" fill="#e53935"/><rect x="34" y="34" width="8" height="5" fill="#1e88e5"/></svg>`,
+ tank:`<svg viewBox="0 0 64 64"><path d="M10 14h44v40a4 4 0 0 1-4 4H14a4 4 0 0 1-4-4z" fill="#263238"/><path d="M10 14c0-6 44-6 44 0" fill="#37474f" stroke="#263238" stroke-width="3"/><path d="M10 24h44M10 34h44M10 44h44" stroke="#455a64" stroke-width="2"/><rect x="28" y="6" width="8" height="4" fill="#455a64"/></svg>`,
+ cooker:`<svg viewBox="0 0 64 64"><rect x="10" y="24" width="40" height="32" rx="8" fill="#cfd8dc" stroke="#455a64" stroke-width="3"/><path d="M8 24h44" stroke="#455a64" stroke-width="5"/><path d="M50 22h12" stroke="#212121" stroke-width="6" stroke-linecap="round"/><rect x="26" y="12" width="8" height="10" rx="2" fill="#212121"/></svg>`,
+ bigbottle:`<svg viewBox="0 0 64 64"><rect x="27" y="1" width="10" height="6" rx="2" fill="#2e7d32"/><path d="M27 7h10v6l8 9v36a5 5 0 0 1-5 5H24a5 5 0 0 1-5-5V22l8-9z" fill="#c8e6c9" stroke="#2e7d32" stroke-width="3"/><rect x="19" y="30" width="26" height="14" fill="#fff" stroke="#2e7d32" stroke-width="1.5"/><text x="32" y="41" font-size="11" font-weight="900" text-anchor="middle" fill="#2e7d32" font-family="Arial">2 l</text></svg>`
+};
+
+/* ============ navigation ============ */
+function show(id){ $$('.screen').forEach(s=>s.classList.toggle('on',s.id===id)); window.scrollTo(0,0);
+  if(id==='sort'&&!sortState.started) newSort(); if(id==='fill'&&!fillState.started) setMode(0); if(id==='milk'&&!milkState.started) newMilkRound(); }
+$$('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
+$('#homeBtn').onclick=()=>show('home');
+$('#muteBtn').onclick=e=>{muted=!muted;e.currentTarget.textContent=muted?'🔇':'🔊'};
+$('#fsBtn').onclick=()=>{ const d=document; if(!d.fullscreenElement) (d.documentElement.requestFullscreen||function(){}).call(d.documentElement); else d.exitFullscreen&&d.exitFullscreen(); };
+$('#modal').addEventListener('click',e=>{ if(e.target.id==='modal') closeModal(); });
+$('#art1').innerHTML=IC.cup+IC.bottle1+IC.bucket;
+$('#art3').innerHTML=milkCanSVG(500,'#90a4ae')+milkCanSVG(200,'#90a4ae')+milkCanSVG(50,'#90a4ae');
+
+/* =========================================================
+   GAME 1 : CAPACITY SORT (page 122)
+   ========================================================= */
+const ITEMS=[
+ {n:'Teaspoon',ic:'spoon',ml:5,cap:'about 5 ml'},
+ {n:'Tea cup',ic:'cup',ml:150,cap:'about 150 ml'},
+ {n:'Drinking glass',ic:'glass',ml:250,cap:'about 250 ml'},
+ {n:'Baby feeding bottle',ic:'baby',ml:250,cap:'about 250 ml'},
+ {n:'Bowl',ic:'bowl',ml:300,cap:'about 300 ml'},
+ {n:'Cold drink can',ic:'can',ml:300,cap:'about 300 ml'},
+ {n:'Eye-drop bottle',ic:'drop',ml:10,cap:'about 10 ml'},
+ {n:'Shampoo bottle',ic:'shampoo',ml:200,cap:'about 200 ml'},
+ {n:'1 litre water bottle',ic:'bottle1',ml:1000,cap:'1 l'},
+ {n:'Milk packet (1 l)',ic:'milkpack',ml:1000,cap:'1 l'},
+ {n:'Cooking oil bottle (1 l)',ic:'oil',ml:1000,cap:'1 l'},
+ {n:'Juice pack (1 l)',ic:'juice',ml:1000,cap:'1 l'},
+ {n:'Bucket',ic:'bucket',ml:15000,cap:'about 15 l'},
+ {n:'Oil drum',ic:'drum',ml:200000,cap:'about 200 l'},
+ {n:'Bathtub',ic:'tub',ml:150000,cap:'about 150 l'},
+ {n:'Kettle',ic:'kettle',ml:2000,cap:'about 2 l'},
+ {n:'Cooking pot (patila)',ic:'pot',ml:5000,cap:'about 5 l'},
+ {n:'Water jug',ic:'jug',ml:2000,cap:'about 2 l'},
+ {n:'Water dispenser',ic:'cooler',ml:20000,cap:'about 20 l'},
+ {n:'Water tank',ic:'tank',ml:500000,cap:'about 500 l'},
+ {n:'Pressure cooker',ic:'cooker',ml:5000,cap:'about 5 l'},
+ {n:'Cold drink bottle (2 l)',ic:'bigbottle',ml:2000,cap:'2 l'}
+];
+const cat=ml=>ml<1000?'less':ml===1000?'eq':'more';
+const CATNAME={less:'LESS than 1 litre',eq:'exactly 1 litre',more:'MORE than 1 litre'};
+const sortState={started:false,items:[],sel:null,score:0,left:0,tries:0};
+function newSort(){
+  sortState.started=true; sortState.score=0; sortState.sel=null;
+  const pick=[...shuffle(ITEMS.filter(i=>cat(i.ml)==='less')).slice(0,3),...shuffle(ITEMS.filter(i=>cat(i.ml)==='eq')).slice(0,3),...shuffle(ITEMS.filter(i=>cat(i.ml)==='more')).slice(0,3)];
+  sortState.items=shuffle(pick); sortState.left=9;
+  $$('.bin .in').forEach(b=>b.innerHTML='');
+  const tray=$('#tray'); tray.innerHTML='';
+  sortState.items.forEach((it,i)=>{ const d=document.createElement('div'); d.className='item'; d.dataset.i=i;
+    d.innerHTML=IC[it.ic]+`<div class="nm">${it.n}</div>`; tray.appendChild(d); attachDrag(d); });
+  updSort();
+}
+function updSort(){ $('#sortLeft').textContent='Left: '+sortState.left; $('#sortScore').textContent='⭐ '+sortState.score; }
+function selectItem(el){ $$('#tray .item').forEach(x=>x.classList.remove('sel')); if(sortState.sel===el){sortState.sel=null;return;} sortState.sel=el; el.classList.add('sel'); tone(520,.06); }
+function placeItem(el,binCat){
+  const it=sortState.items[+el.dataset.i], right=cat(it.ml), ok=right===binCat;
+  el.classList.remove('sel'); sortState.sel=null;
+  const bin=$(`.bin[data-cat="${right}"] .in`);
+  el.classList.add('done'); if(!ok) el.classList.add('wrong');
+  el.insertAdjacentHTML('beforeend',`<span class="cap">${it.cap}</span>`);
+  bin.appendChild(el); el.replaceWith(el.cloneNode(true)); // drop listeners
+  sortState.left--;
+  if(ok){ sortState.score++; sGood(); toast(`✅ Right! ${it.n} holds ${it.cap} — ${CATNAME[right]}.`,'good'); }
+  else { sBad(); const b=$(`.bin[data-cat="${binCat}"]`); b.classList.add('shake'); setTimeout(()=>b.classList.remove('shake'),400);
+    toast(`❌ ${it.n} holds ${it.cap}. That is ${CATNAME[right]}.`,'bad'); }
+  updSort();
+  if(sortState.left===0) setTimeout(()=>{ if(sortState.score>=7){sWin();confetti();}
+    modal(`<div class="big-emoji">${sortState.score===9?'🏆':sortState.score>=6?'🌟':'💪'}</div><h3>You got ${sortState.score} out of 9!</h3>
+    <p>Remember: <b>1 litre = 1000 ml</b>. A spoon, cup or glass holds <b>less</b> than 1 l. A bucket, tank or tub holds <b>more</b> than 1 l.</p>
+    <p style="color:var(--muted)">Discuss: Which containers at your home hold more than 1 litre?</p>
+    <div class="row"><button class="btn pri" id="mAgain">🔄 Play again</button><button class="btn ghost" id="mHome">🏠 Home</button></div>`);
+    $('#mAgain').onclick=()=>{closeModal();newSort()}; $('#mHome').onclick=()=>{closeModal();show('home')}; },1300);
+}
+function attachDrag(el){
+  let sx,sy,drag=false,ghost=null,pid=null;
+  el.addEventListener('pointerdown',e=>{ if(el.classList.contains('done'))return; sx=e.clientX;sy=e.clientY;drag=false;pid=e.pointerId; el.setPointerCapture(pid); });
+  el.addEventListener('pointermove',e=>{ if(pid===null||e.pointerId!==pid)return;
+    if(!drag && Math.hypot(e.clientX-sx,e.clientY-sy)>12){ drag=true; ghost=el.cloneNode(true); ghost.classList.add("dragghost"); ghost.style.width=el.offsetWidth+'px'; document.body.appendChild(ghost); el.style.opacity=.35; }
+    if(drag){ ghost.style.left=e.clientX+'px'; ghost.style.top=e.clientY+'px';
+      const b=binAt(e.clientX,e.clientY); $$('.bin').forEach(x=>x.classList.toggle('hot',x===b)); } });
+  const end=e=>{ if(pid===null||e.pointerId!==pid)return; pid=null;
+    if(drag){ ghost&&ghost.remove(); el.style.opacity=''; $$('.bin').forEach(x=>x.classList.remove('hot'));
+      const b=binAt(e.clientX,e.clientY); if(b) placeItem(el,b.dataset.cat); }
+    else if(e.type==='pointerup') selectItem(el); drag=false; };
+  el.addEventListener('pointerup',end); el.addEventListener('pointercancel',end);
+}
+function binAt(x,y){ const el=document.elementFromPoint(x,y); return el?el.closest('.bin'):null; }
+$$('.bin').forEach(b=>b.addEventListener('click',e=>{ if(sortState.sel) placeItem(sortState.sel,b.dataset.cat); else if(!e.target.closest('.item')) toast('First tap a container 👆'); }));
+$('#sortNew').onclick=newSort;
+
+/* =========================================================
+   GAME 2 : FILL THE 1 LITRE BOTTLE (pages 122-125)
+   ========================================================= */
+const SIZES=[500,250,200,100,50,10];
+const VCOL={500:'#1f78c0',250:'#3fa2e8',200:'#7b5cd6',100:'#e07b16',50:'#138808',10:'#c2185b'};
+const MODES=[
+ {t:'Free Fill',task:'Fill the 1 litre bottle any way you like. Every pour is added up for you!',only:null},
+ {t:'Only 500 ml',task:'How many <b>500 ml</b> bottles will fill a <b>1 l</b> bottle?',only:500,ask:true},
+ {t:'Only 250 ml',task:'How many <b>250 ml</b> bottles will fill a <b>1 l</b> bottle?',only:250,ask:true},
+ {t:'Only 200 ml',task:'How many <b>200 ml</b> bottles will fill a <b>1 l</b> bottle?',only:200,ask:true},
+ {t:'Only 100 ml',task:'How many <b>100 ml</b> bottles will fill a <b>1 l</b> bottle?',only:100,ask:true},
+ {t:'Only 50 ml',task:'How many <b>50 ml</b> bottles will fill a <b>1 l</b> bottle?',only:50,ask:true},
+ {t:'Fewest pours',task:'Fill 1 l using the <b>fewest pours</b> possible.',goal:'fewest'},
+ {t:'3 pours',task:'Fill 1 l in <b>exactly 3 pours</b>.',goal:'n',n:3},
+ {t:'4 different sizes',task:'Fill 1 l using <b>4 different containers</b> — each size only once!',goal:'distinct',n:4},
+ {t:'Mystery start',task:'',goal:'mystery'}
+];
+const fillState={started:false,mode:0,pours:[],busy:false,score:0,pred:null,start:0};
+const K=.296;
+function bottleSVG(){
+  // body area for 0..1000 ml : y=400 (0) to y=110 (1000) -> 0.29 px per ml
+  let ticks='';
+  for(let m=100;m<=1000;m+=100){ const y=408-m*K;
+    ticks+=`<line x1="40" x2="${m%500===0?78:62}" y1="${y}" y2="${y}" stroke="#0d47a1" stroke-width="${m%500===0?3:2}"/>`+
+    `<text x="${m%500===0?84:68}" y="${y+5}" font-size="${m%500===0?16:13}" font-weight="800" fill="#0d47a1" font-family="Arial">${m===1000?'1 l':m}</text>`; }
+  [250,500,750].forEach(m=>{const y=408-m*K; ticks+=`<line x1="150" x2="180" y1="${y}" y2="${y}" stroke="#e65100" stroke-width="3" stroke-dasharray="5 3"/><rect x="117" y="${y-10}" width="32" height="20" rx="6" fill="#fff" stroke="#e65100" stroke-width="1.5"/><text x="133" y="${y+5}" text-anchor="middle" font-size="14" font-weight="900" fill="#e65100" font-family="Arial">${FR[m]}</text>`});
+  return `<svg class="bottle" viewBox="0 0 220 430" aria-label="1 litre bottle">
+  <defs><clipPath id="bclip"><path d="M40 112 Q40 98 60 92 L82 84 L82 46 L138 46 L138 84 L160 92 Q180 98 180 112 L180 392 Q180 408 164 408 L56 408 Q40 408 40 392 Z"/></clipPath>
+  <linearGradient id="wg" x1="0" x2="1"><stop offset="0" stop-color="#5bb7f2"/><stop offset=".5" stop-color="#3fa2e8"/><stop offset="1" stop-color="#2a86cc"/></linearGradient></defs>
+  <rect x="76" y="14" width="68" height="34" rx="6" fill="#1565c0"/>
+  <path d="M40 112 Q40 98 60 92 L82 84 L82 46 L138 46 L138 84 L160 92 Q180 98 180 112 L180 392 Q180 408 164 408 L56 408 Q40 408 40 392 Z" fill="#f2f9ff"/>
+  <g clip-path="url(#bclip)"><rect id="water" x="30" y="408" width="160" height="0" fill="url(#wg)"/><rect id="spill" x="30" y="0" width="160" height="0" fill="rgba(210,59,47,.25)"/></g>
+  ${ticks}
+  <path d="M40 112 Q40 98 60 92 L82 84 L82 46 L138 46 L138 84 L160 92 Q180 98 180 112 L180 392 Q180 408 164 408 L56 408 Q40 408 40 392 Z" fill="none" stroke="#1565c0" stroke-width="5"/>
+  <path d="M52 130 L52 380" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".6"/>
+  <text x="110" y="426" text-anchor="middle" font-size="15" font-weight="900" fill="#7b1e2b" font-family="Arial">1 LITRE BOTTLE</text>
+  <rect id="stream" x="104" y="0" width="12" height="0" rx="5" fill="#3fa2e8"/>
+  </svg>`;
+}
+function vesselSVG(ml){
+  const c=VCOL[ml], h={500:62,250:52,200:48,100:40,50:32,10:24}[ml], w={500:40,250:34,200:32,100:28,50:24,10:20}[ml];
+  const x=(60-w)/2, y=70-h;
+  return `<svg viewBox="0 0 60 72"><path d="M${x} ${y+8} Q${x} ${y} ${x+6} ${y} L${x+w-6} ${y} Q${x+w} ${y} ${x+w} ${y+8} L${x+w} ${68} Q${x+w} 70 ${x+w-3} 70 L${x+3} 70 Q${x} 70 ${x} 68 Z" fill="${c}22" stroke="${c}" stroke-width="3"/>
+   <rect x="${x+3}" y="${y+h*.25}" width="${w-6}" height="${h*.72}" rx="3" fill="${c}"/><rect x="${x+w/2-5}" y="${y-6}" width="10" height="7" rx="2" fill="${c}"/></svg>`;
+}
+function buildFill(){
+  $('#bottleWrap').innerHTML=bottleSVG();
+  $('#modes').innerHTML=MODES.map((m,i)=>`<button data-m="${i}">${m.t}</button>`).join('');
+  $$('#modes button').forEach(b=>b.onclick=()=>setMode(+b.dataset.m));
+  $('#vessels').innerHTML=SIZES.map(s=>`<button class="vessel" data-s="${s}">${vesselSVG(s)}<div class="ml">${s} ml</div><div class="cnt" id="cnt${s}">used 0</div></button>`).join('');
+  $$('#vessels .vessel').forEach(b=>b.onclick=()=>pour(+b.dataset.s));
+  $('#undoBtn').onclick=()=>{ if(fillState.busy||fillState.pours.length<=fillState.fixed)return; fillState.pours.pop(); tone(400,.08); renderFill(true); };
+  $('#emptyBtn').onclick=()=>{ if(fillState.busy)return; fillState.pours=fillState.pours.slice(0,fillState.fixed); tone(300,.1); renderFill(true); };
+}
+buildFill();
+function setMode(i){
+  fillState.started=true; fillState.mode=i; fillState.pours=[]; fillState.pred=null; fillState.fixed=0; fillState.won=false;
+  const m=MODES[i];
+  $$('#modes button').forEach(b=>b.classList.toggle('on',+b.dataset.m===i));
+  $$('#vessels .vessel').forEach(v=>v.classList.toggle('locked', !!m.only && +v.dataset.s!==m.only));
+  if(m.goal==='mystery'){ const starts=[300,450,550,650,700,850,350,600]; const st=starts[Math.floor(Math.random()*starts.length)];
+    fillState.pours=[st]; fillState.fixed=1; m.task=`Someone already poured <b>${st} ml</b> into the bottle. How much more is needed? Fill it up!`; }
+  $('#task').innerHTML='🎯 '+m.task;
+  renderFill(true);
+  if(m.ask){ const ans=1000/m.only; const o=shuffle([...new Set([ans,ans*2,Math.max(1,ans/2),ans+1,ans-1].filter(x=>x>0&&Number.isInteger(x)))]).slice(0,4);
+    if(!o.includes(ans)) o[0]=ans;
+    modal(`<div class="big-emoji">🤔</div><h3>First, guess!</h3><p>${m.task}</p><div class="opts">${shuffle(o).map(x=>`<button data-p="${x}">${x}</button>`).join('')}</div>
+      <p style="color:var(--muted);margin-top:12px">Now pour and check your guess.</p>`);
+    $$('#modalBox [data-p]').forEach(b=>b.onclick=()=>{ fillState.pred=+b.dataset.p; closeModal(); renderFill(true); }); }
+  if(m.goal==='mystery') { const st=fillState.pours[0];
+    modal(`<div class="big-emoji">🕵️</div><h3>Mystery start</h3><p>The bottle already has <b>${st} ml</b>.<br>How much more water is needed to make 1 l?</p>
+      <div class="opts">${shuffle([1000-st,1000-st+100,1000-st-50,st]).map(x=>`<button data-p="${x}">${x} ml</button>`).join('')}</div>`);
+    $$('#modalBox [data-p]').forEach(b=>b.onclick=()=>{ const v=+b.dataset.p; if(v===1000-st){sGood();toast(`✅ Yes! 1000 − ${st} = ${1000-st} ml`,'good');} else {sBad();toast(`Not quite: 1000 − ${st} = ${1000-st} ml`,'bad');} closeModal(); }); }
+}
+const total=()=>fillState.pours.reduce((a,b)=>a+b,0);
+let curLevel=0;
+function setWater(ml,anim){
+  const target=Math.min(ml,1000)*K, w=$('#water'); if(!w)return;
+  if(!anim){ curLevel=target; w.setAttribute('y',408-target); w.setAttribute('height',target); return; }
+  const from=curLevel, t0=performance.now(), D=650;
+  (function step(t){ const k=Math.min(1,(t-t0)/D), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2, v=from+(target-from)*e;
+    w.setAttribute('y',408-v); w.setAttribute('height',v); curLevel=v; if(k<1) requestAnimationFrame(step); })(t0);
+}
+function pour(s){
+  if(fillState.busy||fillState.won)return;
+  const t=total();
+  if(t>=1000){ toast('The bottle is already full! 🎉'); return; }
+  if(t+s>1000){ sBad(); const sp=$('#spill'); sp.setAttribute('height',110); setTimeout(()=>sp.setAttribute('height',0),700);
+    toast(`⚠️ ${t} + ${s} = ${t+s} ml — that is MORE than 1000 ml!<br>It will overflow by ${t+s-1000} ml. Try a smaller container.`,'bad');
+    $('#calc .need')&&$('#calc .need').classList.add('shake'); return; }
+  fillState.busy=true; sPour();
+  const st=$('#stream'); st.setAttribute('height',408-(curLevel)); st.setAttribute('y',0);
+  setTimeout(()=>{ fillState.pours.push(s); renderFill(true); },150);
+  setTimeout(()=>{ st.setAttribute('height',0); fillState.busy=false; checkFillWin(); },750);
+}
+function groupText(p){ const g={}; p.forEach(x=>g[x]=(g[x]||0)+1);
+  return Object.keys(g).map(Number).sort((a,b)=>b-a).map(k=>`(${g[k]} × ${k} ml)`).join(' + '); }
+function renderFill(anim){
+  const p=fillState.pours, t=total(), need=1000-t, m=MODES[fillState.mode];
+  setWater(t,anim);
+  SIZES.forEach(s=>{ const c=p.slice(fillState.fixed).filter(x=>x===s).length; const el=$('#cnt'+s); if(el) el.textContent='used '+c; });
+  let html=`<h3>🧮 Calculation</h3>`;
+  html+=`<div class="eq"><span class="lab">Pours (${p.length})</span><div class="chips">${p.length?p.map((x,i)=>`<span class="chip c${x}" ${i<fillState.fixed?'style="background:#555"':''}>${x} ml</span>`).join(''):'<span style="color:var(--muted)">Tap a container to pour</span>'}</div></div>`;
+  if(p.length){
+    html+=`<div class="eq"><span class="lab">Adding</span>${p.join(' + ')} = <span class="big">${t} ml</span>${FR[t]?` = <span class="big">${FR[t]}</span>`:''}`;
+    if(p.length>1 && new Set(p).size<p.length) html+=`<br><span style="color:var(--muted);font-size:.9em">Grouped: ${groupText(p)} = ${t} ml</span>`;
+    html+=`</div>`;
+  }
+  if(t<1000) html+=`<div class="eq need"><span class="lab">Still needed</span>1000 ml − ${t} ml = <span class="big">${need} ml</span>${FR[need]&&need<1000?` (${FR[need]})`:''}
+    <div class="bar"><i style="width:${t/10}%"></i></div><span style="font-size:.85em;color:var(--muted)">${Math.round(t/10)}% full</span></div>`;
+  else html+=`<div class="eq done"><span class="lab">Bottle full!</span><span class="big">${t} ml = 1 l</span><div class="bar"><i style="width:100%"></i></div></div>`;
+  if(m.only && fillState.pred!==null) html+=`<div class="eq"><span class="lab">Your guess</span>${fillState.pred} bottles of ${m.only} ml</div>`;
+  $('#calc').innerHTML=html;
+  $('#fillScore').textContent='⭐ '+fillState.score;
+}
+function checkFillWin(){
+  const p=fillState.pours, t=total(), m=MODES[fillState.mode]; if(t!==1000||fillState.won)return;
+  fillState.won=true; const mine=p.slice(fillState.fixed); let ok=true, msg='', extra='';
+  if(m.only){ const n=mine.length; msg=`<b>${n} bottles of ${m.only} ml</b> fill 1 l.<br>${n} × ${m.only} ml = 1000 ml = 1 l`;
+    if(m.only===500) extra='<br>So, 500 ml = ½ l'; if(m.only===250) extra='<br>So, 250 ml = ¼ l';
+    if(fillState.pred!==null) extra+= fillState.pred===n?`<br>🎯 Your guess (${fillState.pred}) was <b>correct</b>!`:`<br>Your guess was ${fillState.pred}. The answer is <b>${n}</b>.`; ok=fillState.pred===null||fillState.pred===n; }
+  else if(m.goal==='fewest'){ ok=mine.length===2; msg=ok?'Only 2 pours: 500 ml + 500 ml = 1000 ml. That is the fewest!':`You used ${mine.length} pours. Can you do it in only 2? (Hint: use the biggest container.)`; }
+  else if(m.goal==='n'){ ok=mine.length===m.n; msg=ok?`Exactly 3 pours: ${mine.join(' + ')} = 1000 ml 👏`:`You used ${mine.length} pours, not 3. Try again!`; }
+  else if(m.goal==='distinct'){ const d=new Set(mine).size; ok=mine.length===4&&d===4; msg=ok?`4 different sizes: ${mine.join(' + ')} = 1000 ml 🧠`:`You used ${mine.length} pours with ${d} different sizes. Each size only once, 4 sizes in all — try again!`; }
+  else if(m.goal==='mystery'){ msg=`${fillState.pours[0]} ml + ${mine.join(' + ')} ml = 1000 ml<br>You added <b>${1000-fillState.pours[0]} ml</b>.`; }
+  else { msg=`${p.join(' + ')} = 1000 ml = 1 l<br>${groupText(p)}<br>You used <b>${p.length}</b> pours.`; }
+  if(ok){ fillState.score++; sWin(); confetti(); } else sBad();
+  renderFill(false);
+  setTimeout(()=>{ modal(`<div class="big-emoji">${ok?'🎉':'🔁'}</div><h3>${ok?'Bottle filled!':'Bottle full — but…'}</h3><p>${msg}${extra}</p>
+   <div class="row"><button class="btn pri" id="fAgain">🔄 Try again</button><button class="btn grn" id="fNext">Next challenge ▶</button></div>`);
+   $('#fAgain').onclick=()=>{closeModal();setMode(fillState.mode)}; $('#fNext').onclick=()=>{closeModal();setMode((fillState.mode+1)%MODES.length)}; },500);
+}
+
+/* =========================================================
+   GAME 3 : MILK MEASURING CANS (page 127)
+   ========================================================= */
+function milkCanSVG(ml,col='#9e9e9e'){
+  const sc={1000:1,500:.82,200:.66,100:.54,50:.44}[ml]||.6, H=Math.round(110*sc), W=Math.round(64*sc);
+  const x=(80-W)/2, y=128-H;
+  return `<svg viewBox="0 0 80 132" width="${Math.round(80*Math.max(.62,sc))}" style="height:auto">
+   <path d="M${x+W} ${y+12} q14 4 12 ${H*.35}" fill="none" stroke="#757575" stroke-width="5"/>
+   <rect x="${x-4}" y="${y-4}" width="${W+8}" height="9" rx="3" fill="#bdbdbd" stroke="#616161" stroke-width="2"/>
+   <path d="M${x} ${y+4} L${x+W} ${y+4} L${x+W} ${y+H-6} Q${x+W} ${y+H} ${x+W-6} ${y+H} L${x+6} ${y+H} Q${x} ${y+H} ${x} ${y+H-6} Z" fill="#e0e0e0" stroke="#616161" stroke-width="2.5"/>
+   <path d="M${x+6} ${y+10} L${x+6} ${y+H-8}" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+   <text x="${x+W/2}" y="${y+H*.62}" text-anchor="middle" font-size="${Math.max(12,16*sc)}" font-weight="900" fill="#7b1e2b" font-family="Arial">${ml}</text></svg>`;
+}
+function potSVG(){
+  return `<svg viewBox="0 0 240 300">
+   <defs><clipPath id="pclip"><path d="M40 70 L200 70 L196 262 Q196 280 176 280 L64 280 Q44 280 44 262 Z"/></clipPath></defs>
+   <path d="M40 70 L200 70 L196 262 Q196 280 176 280 L64 280 Q44 280 44 262 Z" fill="#fafafa"/>
+   <g clip-path="url(#pclip)"><rect id="milkLvl" x="30" y="280" width="190" height="0" fill="#fffdf2"/><rect id="milkTop" x="30" y="280" width="190" height="6" fill="#efe6c8"/></g>
+   <line id="tgtLine" x1="34" x2="206" y1="200" y2="200" stroke="#f28c28" stroke-width="4" stroke-dasharray="10 6"/>
+   <text id="tgtTxt" x="120" y="194" text-anchor="middle" font-size="16" font-weight="900" fill="#e65100" font-family="Arial">ORDER</text>
+   <path d="M40 70 L200 70 L196 262 Q196 280 176 280 L64 280 Q44 280 44 262 Z" fill="none" stroke="#546e7a" stroke-width="6"/>
+   <rect x="30" y="60" width="180" height="14" rx="6" fill="#90a4ae" stroke="#546e7a" stroke-width="3"/>
+   <path d="M30 100 q-26 0 -22 30 q4 24 30 22M210 100 q26 0 22 30 q-4 24 -30 22" fill="none" stroke="#546e7a" stroke-width="6"/>
+   <text x="120" y="298" text-anchor="middle" font-size="13" font-weight="800" fill="#7b1e2b" font-family="Arial">CUSTOMER'S VESSEL (holds 2 l)</text>
+   <rect id="mStream" x="113" y="0" width="14" height="0" rx="6" fill="#fffdf2" stroke="#e0d6b0"/>
+  </svg>`;
+}
+function personSVG(c){ return `<svg viewBox="0 0 90 110"><circle cx="45" cy="30" r="20" fill="#f1c27d"/><path d="M25 26 q20 -26 40 0" fill="#3e2723"/>
+  <circle cx="38" cy="30" r="2.6" fill="#222"/><circle cx="52" cy="30" r="2.6" fill="#222"/><path d="M38 40 q7 6 14 0" fill="none" stroke="#6d4c41" stroke-width="2.5"/>
+  <path d="M14 108 q0 -50 31 -54 q31 4 31 54z" fill="${c}"/></svg>`; }
+const CANS=[1000,500,200,100,50];
+const ORDERS=[250,500,750,1000,1250,1500,1750,300,350,400,450,600,650,700,800,850,900,950,1100,1200,1350,1600,150,550];
+const CUSTS=['Ms Shetty','Mr Das','Mrs Khan','Rita','Shabnam','Mr Patel','Taran','Mrs Fernandes','Ms Kannan','Mr Muthukumar'];
+const COLS=['#7b1e2b','#138808','#1f78c0','#f28c28','#7b5cd6','#c2185b'];
+const milkState={started:false,n:0,coins:0,order:0,pours:[],busy:false,list:[]};
+function minCans(ml){ let r=ml,c=0; CANS.forEach(k=>{c+=Math.floor(r/k); r%=k;}); return c; }
+function orderWords(ml){ const opts=[`<b>${fmt(ml)}</b>`]; if(FR[ml]) opts.push(`<b>${FR[ml]}</b>`); if(ml>=1000) opts.push(`<b>${ml} ml</b>`);
+  return opts[Math.floor(Math.random()*opts.length)]; }
+function buildMilk(){
+  $('#cans').innerHTML=CANS.map(k=>`<button class="can" data-k="${k}">${milkCanSVG(k)}<span class="ml">${k} ml</span></button>`).join('');
+  $$('#cans .can').forEach(b=>b.onclick=()=>milkPour(+b.dataset.k));
+  $('#potWrap').innerHTML=potSVG();
+  $('#mUndo').onclick=()=>{ if(milkState.busy||!milkState.pours.length)return; milkState.pours.pop(); renderMilk(); };
+  $('#mEmpty').onclick=()=>{ if(milkState.busy)return; milkState.pours=[]; renderMilk(); };
+  $('#mServe').onclick=serve;
+  $$('.tabs button').forEach(b=>b.onclick=()=>{ $$('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+    const leak=b.dataset.tab==='leak'; $('#tabCans').style.display=leak?'none':''; $('#tabLeak').style.display=leak?'':'none';
+    $('#custNo').style.display=leak?'none':''; $('#coins').style.display=leak?'none':''; $('#milkTitle').textContent=leak?'Leaky Tap — Save Water!':'Milk Measuring Cans'; if(leak&&!leakState.built) buildLeak(); });
+}
+buildMilk();
+function newMilkRound(){ milkState.started=true; milkState.n=0; milkState.coins=0;
+  milkState.list=shuffle(ORDERS).slice(0,6); milkState.names=shuffle(CUSTS); nextCustomer(); }
+function nextCustomer(){
+  const i=milkState.n; milkState.order=milkState.list[i]; milkState.pours=[];
+  $('#custArt').innerHTML=personSVG(COLS[i%COLS.length]);
+  $('#orderTxt').innerHTML=`Namaste! I am <b style="font-size:1em">${milkState.names[i]}</b>.<br>Please give me ${orderWords(milkState.order)} of milk.`;
+  $('#custNo').textContent=`Customer ${i+1} / 6`; $('#coins').textContent='🪙 '+milkState.coins;
+  const y=280-milkState.order*.1; $('#tgtLine').setAttribute('y1',y); $('#tgtLine').setAttribute('y2',y); $('#tgtTxt').setAttribute('y',y-7);
+  $('#tgtTxt').textContent='ORDER: '+fmt(milkState.order);
+  renderMilk();
+}
+let milkLevel=0;
+function setMilk(ml){ const target=Math.min(ml,2000)*.1, from=milkLevel, t0=performance.now();
+  (function step(t){ const k=Math.min(1,(t-t0)/500), v=from+(target-from)*k; const L=$('#milkLvl'),T=$('#milkTop');
+    L.setAttribute('y',280-v); L.setAttribute('height',v); T.setAttribute('y',280-v); T.setAttribute('height',v>0?6:0); milkLevel=v; if(k<1)requestAnimationFrame(step); })(t0); }
+function milkPour(k){
+  if(milkState.busy)return; const t=milkState.pours.reduce((a,b)=>a+b,0);
+  if(t+k>2000){ sBad(); toast('The vessel can hold only 2 l!','bad'); return; }
+  milkState.busy=true; sPour(); const s=$('#mStream'); s.setAttribute('height',280-milkLevel);
+  setTimeout(()=>{ milkState.pours.push(k); renderMilk(); },120);
+  setTimeout(()=>{ s.setAttribute('height',0); milkState.busy=false; const nt=t+k;
+    if(nt>milkState.order) toast(`Oops! ${nt} ml is more than the order (${milkState.order} ml). Undo the last can.`,'bad'); },650);
+}
+function renderMilk(){
+  const p=milkState.pours, t=p.reduce((a,b)=>a+b,0), o=milkState.order; setMilk(t);
+  let h=`<h3>🧮 Calculation</h3><div class="eq"><span class="lab">Order</span><span class="big">${fmt(o)}</span>${o>=1000?` = ${o} ml`:''}${FR[o]?` = ${FR[o]}`:''}</div>`;
+  h+=`<div class="eq"><span class="lab">Cans poured (${p.length})</span>${p.length?`${p.join(' + ')} = <span class="big">${t} ml</span>${t>=1000?` = ${fmt(t)}`:''}`:'<span style="color:var(--muted)">Tap a measuring can</span>'}</div>`;
+  if(t<o) h+=`<div class="eq need"><span class="lab">Still to pour</span>${o} − ${t} = <span class="big">${o-t} ml</span></div>`;
+  else if(t===o) h+=`<div class="eq done"><span class="lab">Exact amount!</span><span class="big">${t} ml ✔</span><br>Press <b>Serve</b>.</div>`;
+  else h+=`<div class="eq need" style="background:#fde4e1;border-color:#f3a59d"><span class="lab">Too much</span>${t} − ${o} = <span class="big" style="color:var(--red)">${t-o} ml extra</span></div>`;
+  h+=`<div class="eq"><span class="lab">Fewest cans possible</span>${minCans(o)} cans</div>`;
+  $('#mCalc').innerHTML=h;
+}
+function serve(){
+  if(milkState.busy)return; const p=milkState.pours, t=p.reduce((a,b)=>a+b,0), o=milkState.order;
+  if(!p.length){ toast('Pour some milk first! 🥛'); return; }
+  if(t!==o){ sBad(); toast(t<o?`Not enough! ${o} − ${t} = ${o-t} ml more needed.`:`Too much! Remove ${t-o} ml.`,'bad'); return; }
+  const best=minCans(o), bonus=p.length===best; milkState.coins+=10+(bonus?5:0); sGood(); $('#coins').textContent='🪙 '+milkState.coins;
+  toast(`✅ Served ${fmt(o)}! +10 🪙${bonus?' +5 bonus for fewest cans!':''}`,'good');
+  milkState.n++;
+  setTimeout(()=>{ if(milkState.n<6) nextCustomer(); else { sWin(); confetti();
+    modal(`<div class="big-emoji">🥛</div><h3>Shop closed! You earned ${milkState.coins} 🪙</h3><p>Maximum is 90 coins (6 customers × 15).<br>The milkman's cans: <b>1000 ml, 500 ml, 200 ml, 100 ml, 50 ml</b>.</p>
+      <div class="row"><button class="btn pri" id="mAg">🔄 New customers</button><button class="btn grn" id="mLk">🚰 Try Leaky Tap</button></div>`);
+    $('#mAg').onclick=()=>{closeModal();newMilkRound()}; $('#mLk').onclick=()=>{closeModal();$('[data-tab="leak"]').click()}; } },1100);
+}
+
+/* ---------- LEAKY TAP ---------- */
+const leakState={built:false,rate:100,hour:0,running:false,timer:null};
+function bucketSVG(){ return `<svg viewBox="0 0 260 280">
+  <defs><clipPath id="lclip"><path d="M50 90 L210 90 L190 262 Q188 272 178 272 L82 272 Q72 272 70 262 Z"/></clipPath></defs>
+  <rect x="104" y="6" width="80" height="18" rx="6" fill="#90a4ae" stroke="#546e7a" stroke-width="3"/><rect x="118" y="22" width="18" height="30" fill="#90a4ae" stroke="#546e7a" stroke-width="3"/>
+  <circle id="dropC" cx="127" cy="60" r="6" fill="#3fa2e8"/>
+  <path d="M50 90 L210 90 L190 262 Q188 272 178 272 L82 272 Q72 272 70 262 Z" fill="#f2f9ff"/>
+  <g clip-path="url(#lclip)"><rect id="lw" x="40" y="272" width="180" height="0" fill="#3fa2e8"/></g>
+  <path d="M50 90 L210 90 L190 262 Q188 272 178 272 L82 272 Q72 272 70 262 Z" fill="none" stroke="#0277bd" stroke-width="5"/>
+  <rect x="44" y="84" width="172" height="10" rx="5" fill="#0288d1"/>
+  <text id="lwTxt" x="130" y="190" text-anchor="middle" font-size="24" font-weight="900" fill="#0d47a1" font-family="Arial">0 ml</text>
+  </svg>`; }
+function buildLeak(){ leakState.built=true;
+  $('#rates').innerHTML=[50,100,150,200,250].map(r=>`<button data-r="${r}" class="${r===100?'on':''}">${r} ml / hour</button>`).join('');
+  $$('#rates button').forEach(b=>b.onclick=()=>{ if(leakState.running)return; leakState.rate=+b.dataset.r; $$('#rates button').forEach(x=>x.classList.toggle('on',x===b)); resetLeak(); });
+  $('#leakWrap').innerHTML=bucketSVG(); $('#leakGo').onclick=runLeak; $('#leakReset').onclick=resetLeak; resetLeak(); }
+function resetLeak(){ clearInterval(leakState.timer); leakState.running=false; leakState.hour=0; $('#leakGo').disabled=false; drawLeak(); }
+function drawLeak(){
+  const h=leakState.hour, r=leakState.rate, amt=h*r, max=24*250;
+  const v=amt/max*178; $('#lw').setAttribute('y',272-v); $('#lw').setAttribute('height',v); $('#lwTxt').textContent=fmt(amt)||'0 ml';
+  $('#clock').textContent=`Hour ${h} of 24`;
+  let c=`<h3>🧮 Calculation</h3><div class="eq"><span class="lab">Water lost in 1 hour</span><span class="big">${r} ml</span></div>`;
+  c+=`<div class="eq need"><span class="lab">After ${h} hour${h===1?'':'s'}</span>${h} × ${r} ml = <span class="big">${amt} ml</span>${amt>=1000?` = <b>${fmt(amt)}</b>`:''}</div>`;
+  if(h===24){ const wk=amt*7;
+    c+=`<div class="eq done"><span class="lab">In 1 day (24 hours)</span>24 × ${r} ml = <span class="big">${fmt(amt)}</span></div>
+        <div class="eq done"><span class="lab">In 1 week (7 days)</span>7 × ${fmt(amt)} = ${wk} ml = <span class="big">${fmt(wk)}</span></div>
+        <div class="eq"><span class="lab">That is enough to fill</span><b>${Math.floor(wk/1000)}</b> one-litre bottles! 😮</div>`;
+    c+=leakQuiz(); }
+  $('#leakCalc').innerHTML=c; bindLeakQuiz();
+}
+function runLeak(){ if(leakState.running)return; if(leakState.hour>=24) leakState.hour=0; leakState.running=true; $('#leakGo').disabled=true;
+  leakState.timer=setInterval(()=>{ leakState.hour++; tone(900,.04,'sine',.03); const d=$('#dropC'); d.setAttribute('cy',60); d.animate&&d.animate([{transform:'translateY(0)'},{transform:'translateY(150px)',opacity:.2}],{duration:220});
+    drawLeak(); if(leakState.hour>=24){ clearInterval(leakState.timer); leakState.running=false; $('#leakGo').disabled=false; sWin(); } },260); }
+let lq=null;
+function leakQuiz(){ const r=[50,100,200,250][Math.floor(Math.random()*4)], h=[2,4,5,10][Math.floor(Math.random()*4)], a=r*h;
+  lq={a, opts:shuffle([a,a+r,a-r,a*2].filter((x,i,s)=>s.indexOf(x)===i))};
+  if(!lq.opts.includes(a)) lq.opts[0]=a;
+  return `<div class="qbox"><div class="q">🤔 Quick check: A tap loses ${r} ml in 1 hour. How much water is lost in ${h} hours?</div>
+   <div class="opts">${lq.opts.map(x=>`<button data-q="${x}">${fmt(x)}</button>`).join('')}</div>
+   <p style="margin-top:8px;color:var(--muted);font-size:15px">Discuss: How would this wastage affect us? What can we do to save water?</p></div>`; }
+function bindLeakQuiz(){ $$('#leakCalc [data-q]').forEach(b=>b.onclick=()=>{ const ok=+b.dataset.q===lq.a; b.classList.add(ok?'right':'no');
+  if(ok){sGood();toast('✅ Correct! Every drop counts 💧','good');} else {sBad();toast(`Try again — multiply ml per hour × hours`,'bad');} }); }
+
+/* ---------- home art ---------- */
+$('#art2').innerHTML=`<svg viewBox="0 0 220 230" style="height:140px"><path d="M60 60 L90 50 L90 20 L130 20 L130 50 L160 60 L160 210 Q160 220 150 220 L70 220 Q60 220 60 210 Z" fill="#f2f9ff" stroke="#1565c0" stroke-width="5"/><path d="M63 140 L157 140 L157 210 Q157 217 150 217 L70 217 Q63 217 63 210 Z" fill="#3fa2e8"/><text x="110" y="120" text-anchor="middle" font-size="22" font-weight="900" fill="#1565c0" font-family="Arial">1 l</text></svg>${vesselSVG(250)}${vesselSVG(100)}`;
+})();
+</script>
+</body>
+</html>
